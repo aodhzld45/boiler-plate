@@ -1,0 +1,22 @@
+{
+  "name": "boiler-plate",
+  "version": "1.0.0",
+  "description": "boiler-plate Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aodhzld45/boiler-plate.git"
+  },
+  "author": "seo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aodhzld45/boiler-plate/issues"
+  },
+  "homepage": "https://github.com/aodhzld45/boiler-plate#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
