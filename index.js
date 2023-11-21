@@ -9,7 +9,7 @@ mongoose.connect('mongodb+srv://aodhzld45:abcd1013@boiler-plate.mju6n4y.mongodb.
 }).then(() => {
   console.log('MongoDB Connected.. Success');
 }).catch((err) => {
-  console.log(err);
+  console.log(err + 'test');
 });
 
 app.get('/', (req, res) => {
