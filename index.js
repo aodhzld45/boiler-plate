@@ -18,7 +18,7 @@ mongoose.connect('mongodb+srv://aodhzld45:abcd1013@boiler-plate.mju6n4y.mongodb.
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('루트 주소 취업하고 시포요!');
 });
 
 app.post('/register', async (req, res) => {
