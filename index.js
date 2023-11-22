@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 5000;
 
+// 보안 설정 config 
+const config = require('./config/key')
+
 //User Model Import
 const { User } = require('./models/User');
 
@@ -10,7 +13,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://aodhzld45:abcd1013@boiler-plate.mju6n4y.mongodb.net/', {
+mongoose.connect(config.mongoURI, {
 }).then(() => {
   console.log('MongoDB Connected.. Success');
 }).catch((err) => {
