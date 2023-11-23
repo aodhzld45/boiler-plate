@@ -47,6 +47,29 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// 로그인 기능
+app.post('/login', async (req, res) => {
+  // 1. 요청된 이메일을 DB에서 조회하여 존재하는지 확인
+  User.findOne({ email: req.body.email }, (err, user) => {
+  if (user) {
+    return res.json({
+      loginSuccess: false,
+      message: "제공된 이메일에 해당되는 유저가 없습니다."
+    })
+  }
+  // 2. 요청된 이메일이 DB에 있다면 비밀번호가 맞는 비밀번호인지 확인
+  user.comparePassword(req.body.password, (err, isMatch) => {
+    if(isMatch)
+      return res.json({loginSuccess : false, message : "비밀번호가 틀렸습니다."});
+
+
+  // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. 2023-11-23 비밀번호 확인 작업까지 완료 
+
+  })
+})
+
+})
+
 
 
 
