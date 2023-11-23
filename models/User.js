@@ -45,9 +45,12 @@ userSchema.pre('save', function(next){
                 if (err) return next(err); // 에러처리
                 user.password = hash; // user.password에 hash값을 할당
                 next();
+                // console.log(user.password);
             });
         });
-    } 
+    } else{
+        next(); // password 변경이 아닌 경우 바로 save코드 실행 
+    }
 })
 
 const User = mongoose.model('User', userSchema);
