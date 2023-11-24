@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = 5000;
 
@@ -10,6 +11,7 @@ const config = require('./config/key')
 const { User } = require('./models/User');
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose');
@@ -66,7 +68,14 @@ app.post('/login', async (req, res) => {
   // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. -> jsonWebToken
   user.generateWebToken((err, token) => {
     if (err) return res.status(400).send(err);
+
     // 토큰을 저장한다, 어디에 ? (쿠키) , 로컬스토리지
+     res.cookie("x_auth", user.token)
+     .status(200)
+     .json({loginSuccess : true, userId: user.id});
+
+
+
       
     
 
