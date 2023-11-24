@@ -63,8 +63,15 @@ app.post('/login', async (req, res) => {
       return res.json({loginSuccess : false, message : "비밀번호가 틀렸습니다."});
 
 
-  // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. 2023-11-23 비밀번호 확인 작업까지 완료 
-  // jsonWebToken 사이트 참조
+  // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. -> jsonWebToken
+  user.generateWebToken((err, token) => {
+    if (err) return res.status(400).send(err);
+    // 토큰을 저장한다, 어디에 ? (쿠키) , 로컬스토리지
+      
+    
+
+  })
+
   })
 })
 
