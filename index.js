@@ -33,58 +33,74 @@ app.post('/register', async (req, res) => {
   // req.body에는 json 형태로 {id : 'hello'} 데이터가 들어있음
   const user = new User(req.body);
 
-  try {
-    // await를 사용하여 유저를 저장
-    const savedUser = await user.save();
-    return res.status(200).json({
-      success: true,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      error: '회원가입에 실패했습니다.',
-      details: err.message,
-    });
-  }
+
+  const result = await user.save().then(()=>{
+    res.status(200).json({
+      success: true
+    })
+  }).catch((err)=>{
+    res.json({ success: false, err })
+  })
+  
+  // try {
+  //   // await를 사용하여 유저를 저장
+  //   const savedUser = await user.save();
+  //   return res.status(200).json({
+  //     success: true,
+  //   });
+  // } catch (err) {
+  //   console.error(err);
+  //   return res.status(500).json({
+  //     success: false,
+  //     error: '회원가입에 실패했습니다.',
+  //     details: err.message,
+  //   });
+  // }
 });
 
 // 로그인 기능
 app.post('/login', async (req, res) => {
-  // 1. 요청된 이메일을 DB에서 조회하여 존재하는지 확인
-  User.findOne({ email: req.body.email }, (err, user) => {
-  if (user) {
-    return res.json({
-      loginSuccess: false,
-      message: "제공된 이메일에 해당되는 유저가 없습니다."
-    })
-  }
-  // 2. 요청된 이메일이 DB에 있다면 비밀번호가 맞는 비밀번호인지 확인
-  user.comparePassword(req.body.password, (err, isMatch) => {
-    if(isMatch)
-      return res.json({loginSuccess : false, message : "비밀번호가 틀렸습니다."});
+  try {
+    // 1. 요청된 이메일을 DB에서 조회하여 존재하는지 확인
+    const user = await User.findOne({ email: req.body.email });
 
+    if (!user) {
+      return res.json({
+        loginSuccess: false,
+        message: "제공된 이메일에 해당되는 유저가 없습니다."
+      });
+    }
 
-  // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. -> jsonWebToken
-  user.generateWebToken((err, token) => {
-    if (err) return res.status(400).send(err);
+     // 2. 요청된 이메일이 DB에 있다면 비밀번호가 맞는 비밀번호인지 확인
+     user.comparePassword(req.body.password, (err, isMatch) => {
+        console.log('Received Password:', req.body.password);
+        if (!isMatch) {
+          return res.json({ loginSuccess: false, message: "비밀번호가 틀렸습니다." });
+        } 
+     });
+  
+ 
+    // const isMatch = await user.comparePassword(req.body.password);
+
+    // if (!isMatch) return res.json({ loginSuccess: false, message: "비밀번호가 틀렸습니다." });
+  
+
+    // 3. 이메일, 비밀번호가 모두 일치하면 토큰을 생성하기. -> jsonWebToken
+    const token = await user.generateToken();
+    console.log('Generated Token:', token);
 
     // 토큰을 저장한다, 어디에 ? (쿠키) , 로컬스토리지
-     res.cookie("x_auth", user.token)
-     .status(200)
-     .json({loginSuccess : true, userId: user.id});
+    res.cookie("x_auth", token)
+       .status(200)
+       .json({ loginSuccess: true, userId: user.id });
 
+  } catch (error) {
+    // 에러 처리
+    console.error(error);
+    res.status(500).json({ loginSuccess: false, message: "서버 에러" });
+  }
+});
 
-
-      
-    
-
-  })
-
-  })
-})
-
-})
 
 
 
