@@ -87,32 +87,52 @@ userSchema.methods.generateToken = function(cb) {
 
     // user._id + 'secretToken' = token;
     user.token = token;
-    user.save(function (err, user) {
-        if (err) return cb(err);
-        cb(null, user);
-    });
+   // 프로미스를 반환하도록 변경
+    // 1. 유저 아이디를 이용해서 유저를 찾은 다음,
+    // 2. 클라이언트에서 가져온 Token과 DB에 보관된 토큰이 일치하는지 확인.
+   return user.save()
+    .then(savedUser => savedUser.token)
+    .catch(err => {
+        throw new Error(err);
+   });
 
 }
 
-userSchema.static.findByToken = function (token, cb) {
-    var user = this
+// userSchema.static.findByToken = function (token, cb) {
+//     var user = this
     
-    // user._id + '' = token
+//     // user._id + '' = token
+
+//     // * 토큰을 Decode 한다.
+//     jwt.verify(token, 'secretToken', function (err, decoded) {
+
+//     // Decode에 실패한 경우 에러 처리
+//     if (err) return cb(err);
+
+
+//     user.findOne({"_id" : decoded, "token" : token}, function(err, user) {
+//         if (err) return cb(err);
+//         cb(null, user);
+//     });
+// })
+
+// }
+
+userSchema.statics.findByToken = function (token) {
+    var user = this;
 
     // * 토큰을 Decode 한다.
-    jwt.verify(token, 'secretToken', function (err, decoded) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, 'secretToken', (err, decoded) => {
+            if (err) reject(err);
 
-    // Decode에 실패한 경우 에러 처리
-    if (err) return cb(err);
-
-    // 1. 유저 아이디를 이용해서 유저를 찾은 다음,
-    // 2. 클라이언트에서 가져온 Token과 DB에 보고나된 토큰이 일치하는지 확인.
-    user.findOne({"_id" : decoded, "token" : token}, function(err, user) {
-        if (err) return cb(err);
-        cb(null, user);
+            // 1. 유저 아이디를 이용해서 유저를 찾은 다음,
+            // 2. 클라이언트에서 가져온 Token과 DB에 보고나된 토큰이 일치하는지 확인.
+            user.findOne({"_id" : decoded, "token" : token})
+                .then(user => resolve(user))
+                .catch(err => reject(err));
+        });
     });
-})
-
 }
     
 

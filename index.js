@@ -9,7 +9,7 @@ const config = require('./config/key')
 
 // Model Import
 const { User } = require('./models/User');
-const { Auth } = require('./middleware/auth');
+const { auth } = require('./middleware/auth');
 
 
 app.use(bodyParser.json());
@@ -104,7 +104,7 @@ app.post('/api/users/login', async (req, res) => {
 });
 
 
-app.get('/api/users/auth', async (req, res) => {
+app.get('/api/users/auth', auth, async (req, res) => {
   // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 뜻
   res.status(200).json({
     _id : req.user._id,
@@ -117,6 +117,29 @@ app.get('/api/users/auth', async (req, res) => {
     image : req.user.image  
   })
 })
+
+app.get('/api/users/logout', auth, async (req, res) => {
+
+  res.clearCookie('x_auth');
+
+
+  User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $set: { token: "" } },
+      { new: true }, // 옵션을 추가하여 업데이트된 문서를 반환하도록 함
+      (err, updatedUser) => {
+          if (err) return res.json({ success: false, err });
+          
+          // 로그아웃 후 업데이트된 사용자 정보를 출력
+          console.log('Updated User:', updatedUser);
+          
+          return res.status(200).send({
+              success: true,
+          });
+      }
+  );
+});
+
 
 
 app.listen(port, () => {
