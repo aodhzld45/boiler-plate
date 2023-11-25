@@ -7,8 +7,10 @@ const port = 5000;
 // 보안 설정 config 
 const config = require('./config/key')
 
-//User Model Import
+// Model Import
 const { User } = require('./models/User');
+const { Auth } = require('./middleware/auth');
+
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -26,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('루트 주소 취업하고 시포요! 뿌에에엥');
 });
 
-app.post('/register', async (req, res) => {
+app.post('/api/users/register', async (req, res) => {
   // 회원가입시 필요한 정보들을 Client에서 가져오면 DB에 삽입
 
   // 유저 정보 인스턴스 생성
@@ -59,7 +61,7 @@ app.post('/register', async (req, res) => {
 });
 
 // 로그인 기능
-app.post('/login', async (req, res) => {
+app.post('/api/users/login', async (req, res) => {
   try {
     // 1. 요청된 이메일을 DB에서 조회하여 존재하는지 확인
     const user = await User.findOne({ email: req.body.email });
@@ -102,10 +104,19 @@ app.post('/login', async (req, res) => {
 });
 
 
-
-
-
-
+app.get('/api/users/auth', async (req, res) => {
+  // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 뜻
+  res.status(200).json({
+    _id : req.user._id,
+    isAdmin : req.user.role === 0 ? false : true,
+    isAuth : true,
+    email : req.user.email,
+    name : req.user.name,
+    lastname : req.user.lastname,
+    role : req.user.role,
+    image : req.user.image  
+  })
+})
 
 
 app.listen(port, () => {
