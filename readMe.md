@@ -4,10 +4,10 @@
 
 <h4>src(main) /</h4>
 <pre>
-<p>>_actions    -</p>     
->_reducer    -
+> _actions    )  
+> _reducer    ) => Redux를 위한 Dirtory
 
-
+<h3>components</h3>
 
 </pre>
 
