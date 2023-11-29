@@ -140,6 +140,10 @@ app.get('/api/users/logout', auth, async (req, res) => {
   );
 });
 
+app.get('/api/hello',  async (req, res) => {
+  res.send('안녕하세요 axios 테스트입니다.')
+});
+
 
 
 app.listen(port, () => {
