@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const app = express();
-const port = 5000;
 
 // 보안 설정 config 
 const config = require('./config/key')
@@ -144,8 +143,7 @@ app.get('/api/hello',  async (req, res) => {
   res.send('안녕하세요 axios 테스트입니다.')
 });
 
-
-
+const port = 5000;
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
