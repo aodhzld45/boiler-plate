@@ -17,6 +17,10 @@ const onEmailHandler = (e) => {
 
 }
 
+const onRegisterNav = (e) => {
+  navigate('/register')
+}
+
 const onPasswordHandler = (e) => {
   setPassword(e.currentTarget.value) // 이메일 패스워드 가져오기
 }
@@ -38,7 +42,6 @@ const onFinishHandler  = () => {
         alert('Login failed');
       }
     })  
-
 
   Axios.post("/api/users/login", body)
   .then(res => {
@@ -115,6 +118,10 @@ return (
     >
       <Button type="primary" htmlType="submit">
         Login
+      </Button>
+      &nbsp;
+      <Button type="primary" onClick={onRegisterNav} >
+        Register
       </Button>
     </Form.Item>
   </Form>

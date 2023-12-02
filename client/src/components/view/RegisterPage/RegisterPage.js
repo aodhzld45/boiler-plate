@@ -2,11 +2,13 @@ import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { registerUser } from '../../../_actions/user_action';
+import { useNavigate} from 'react-router-dom'
 
 function RegisterPage() {
 
   const passwordRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [Email, setEmail] = useState("");
   const [Name, setName] = useState("");
@@ -47,8 +49,6 @@ function RegisterPage() {
       return;
     }
       
-    
-  
     let body = {
       email : Email,
       name : Name,
@@ -58,13 +58,15 @@ function RegisterPage() {
 
     dispatch(registerUser(body))
       .then((response) => {
-        
+        if (response.payload.success) {
+          alert('회원가입에 성공하셨습니다.')
+          navigate('/login')
+        }
       }).catch((err) => {
-        
+        console.log(err);
+        alert('register failed');
       });
-  
-  
-  
+
   }
 
 
