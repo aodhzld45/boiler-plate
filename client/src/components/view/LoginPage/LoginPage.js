@@ -1,20 +1,49 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd';
+import Axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../../_actions/user_action';
 
 function LoginPage() {
-  const onFinish = (values) => {
-    console.log('Success', values);
+
+const dispatch = useDispatch();
+const [Email, setEmail] = useState("");
+const [Password, setPassword] = useState("");
+
+const onEmailHandler = (e) => {
+  setEmail(e.currentTarget.value); // 이메일 입력값 가져오기
+
+}
+
+const onPasswordHandler = (e) => {
+  setPassword(e.currentTarget.value) // 이메일 패스워드 가져오기
+}
+
+const onFinishHandler  = () => {
+  console.log('Email : ',Email);
+  console.log('password : ', Password);
+
+  let body = {
+    email : Email,
+    password : Password
   }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  dispatch(loginUser(body));
 
-  return (
-    <div style={{
-      display : 'flex', justifyContent : 'center', alignItems: 'center', 
-      width : '100%', height : '100vh'
-    }}>
+
+  Axios.post("/api/users/login", body)
+  .then(res => {
+
+  })
+
+}
+
+
+return (
+  <div style={{
+    display : 'flex', justifyContent : 'center', alignItems: 'center', 
+    width : '100%', height : '100vh'
+  }}>
  <Form
     name="basic"
     labelCol={{
@@ -29,10 +58,9 @@ function LoginPage() {
     initialValues={{
       remember: true,
     }}
-    onFinish={onFinish}
-    onFinishFailed={onFinishFailed}
     autoComplete="off"
-  >
+    onFinish={onFinishHandler} // 폼 제출을 처리하기 위해 onFinish를 사용하세요
+    >
     <Form.Item
       label="Email"
       name="Email"
@@ -43,20 +71,20 @@ function LoginPage() {
         },
       ]}
     >
-      <Input />
+      <Input value={Email} onChange={onEmailHandler}  />
     </Form.Item>
 
     <Form.Item
-      label="비밀번호"
+      label="password"
       name="password"
       rules={[
         {
           required: true,
-          message: 'Please input your password!',
+          message: '비밀번호를 입력해주세요.',
         },
       ]}
     >
-      <Input.Password />
+      <Input.Password value={Password} onChange={onPasswordHandler} />
     </Form.Item>
 
     <Form.Item
@@ -77,7 +105,7 @@ function LoginPage() {
       }}
     >
       <Button type="primary" htmlType="submit">
-        Submit
+        Login
       </Button>
     </Form.Item>
   </Form>
