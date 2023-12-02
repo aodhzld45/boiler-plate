@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd';
 import Axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { useNavigate} from 'react-router-dom'
 import { loginUser } from '../../../_actions/user_action';
 
 function LoginPage() {
 
 const dispatch = useDispatch();
+const navigate = useNavigate();
 const [Email, setEmail] = useState("");
 const [Password, setPassword] = useState("");
 
@@ -28,7 +30,14 @@ const onFinishHandler  = () => {
     password : Password
   }
 
-  dispatch(loginUser(body));
+  dispatch(loginUser(body))
+    .then((response) => {
+      if (response.payload.loginSuccess) {
+        navigate('/')
+      }else {
+        alert('Login failed');
+      }
+    })  
 
 
   Axios.post("/api/users/login", body)
