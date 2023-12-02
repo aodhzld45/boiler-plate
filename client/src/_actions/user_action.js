@@ -15,3 +15,7 @@ export function loginUser(dataToSubmit) {
     }
 
 }
+
+export function registerUser(params) {
+    
+}
