@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const saltRounds = 10; 
 
 const userSchema = mongoose.Schema({
@@ -83,8 +82,8 @@ userSchema.methods.comparePassword = function(plainPassword, cb){
 userSchema.methods.generateToken = function() {
     var user = this;
     // jsonWebToken을 이용해서 token을 생성하기
-    // var token = jwt.sign(user._id.toHexString(), 'secretToken');
-    const token = jwt.sign({ userId: user._id.toHexString() }, 'secretToken', { expiresIn: '1h' });
+    var token = jwt.sign(user._id.toHexString(), 'secretToken')
+    // const token = jwt.sign({ userId: user._id.toHexString() }, 'secretToken', { expiresIn: '1h' });
 
     user.token = token;
    // 프로미스를 반환하도록 변경
@@ -100,29 +99,8 @@ userSchema.methods.generateToken = function() {
 }
 
 // 토큰 검증
-// userSchema.statics.findByToken = function (token) {
-//     var user = this;
-
-//     // * 토큰을 Decode 한다.
-//     return new Promise((resolve, reject) => {
-//         console.log(token);
-//         jwt.verify(token, 'secretToken', (err, decoded) => {
-//             if (err) reject(err);
-
-//             // 1. 유저 아이디를 이용해서 유저를 찾은 다음,
-//             // 2. 클라이언트에서 가져온 Token과 DB에 보관된 토큰이 일치하는지 확인.
-//             user.findOne({"_id" : decoded._id, "token" : token})
-//                 .then(user => resolve(user))
-//                 .catch(err => reject(err));
-//                 console.log(decoded);
-//         });
-//     });
-// }
-
-// 토큰 검증
-
 userSchema.statics.findByToken = function (token) {
-    const User = this;
+    var user = this;
 
     // 토큰을 Decode 한다.
     return new Promise((resolve, reject) => {
@@ -130,7 +108,7 @@ userSchema.statics.findByToken = function (token) {
             if (err) reject(err);
 
             // 유저 아이디를 이용해서 유저를 찾고, 클라이언트에서 가져온 Token과 DB에 보관된 토큰이 일치하는지 확인
-            User.findOne({ "_id": decoded.userId, "token": token })
+            user.findOne({ "_id": decoded._id, "token": token })
                 .then(user => resolve(user))
                 .catch(err => reject(err));
                 

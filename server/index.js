@@ -23,8 +23,8 @@ mongoose.connect(config.mongoURI, {
   console.log(err + 'test');
 });
 
-app.get('/', (req, res) => {
-  res.send('루트 주소 취업하고 시포요! 뿌에에엥');
+app.get('/', (res) => {
+  res.send('취뽀!');
 });
 
 app.post('/api/users/register', async (req, res) => {
@@ -33,8 +33,7 @@ app.post('/api/users/register', async (req, res) => {
   // 유저 정보 인스턴스 생성
   // req.body에는 json 형태로 {id : 'hello'} 데이터가 들어있음
   const user = new User(req.body);
-
-
+  
   const result = await user.save().then(()=>{
     res.status(200).json({
       success: true
@@ -117,38 +116,26 @@ app.get('/api/users/auth', auth, async (req, res) => {
   })
 })
 
+
 app.get('/api/users/logout', auth, async (req, res) => {
-  // console.log('req.user', req.user)
-  User.findOneAndUpdate({ _id: req.user._id },
-    { token: "" }
-    , (err, user) => {
-      if (err) return res.json({ success: false, err });
-      return res.status(200).send({
-        success: true, message: 'test'
-      })
-    })
-})
 
-
-// app.get('/api/users/logout', auth, async (req, res) => {
-
-//   // res.clearCookie('x_auth');
-//   User.findOneAndUpdate(
-//       { _id: req.user._id },
-//       { $set: { token: "" } },
-//       { new: true }, // 옵션을 추가하여 업데이트된 문서를 반환하도록 함
-//       (err, updatedUser) => {
-//           if (err) return res.json({ success: false, err });
+  // res.clearCookie('x_auth');
+  User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $set: { token: "" } },
+      { new: true }, // 옵션을 추가하여 업데이트된 문서를 반환하도록 함
+      (err, updatedUser) => {
+          if (err) return res.json({ success: false, err });
           
-//           // 로그아웃 후 업데이트된 사용자 정보를 출력
-//           console.log('Updated User:', updatedUser);
+          // 로그아웃 후 업데이트된 사용자 정보를 출력
+          console.log('Updated User:', updatedUser);
           
-//           return res.status(200).send({
-//               success: true, message : 'logout Success'
-//           });
-//       }
-//   );
-// });
+          return res.status(200).send({
+              success: true, message : 'logout Success'
+          });
+      }
+  );
+});
 
 app.get('/api/hello',  async (req, res) => {
   res.send('안녕하세요 axios 테스트입니다.')
