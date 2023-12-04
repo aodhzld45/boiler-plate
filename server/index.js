@@ -93,7 +93,7 @@ app.post('/api/users/login', async (req, res) => {
     // 토큰을 저장한다, 어디에 ? (쿠키) , 로컬스토리지
     res.cookie("x_auth", token)
        .status(200)
-       .json({ loginSuccess: true, userId: user.id });
+       .json({ loginSuccess: true, userId: user._id });
 
   } catch (error) {
     // 에러 처리
@@ -118,24 +118,37 @@ app.get('/api/users/auth', auth, async (req, res) => {
 })
 
 app.get('/api/users/logout', auth, async (req, res) => {
+  // console.log('req.user', req.user)
+  User.findOneAndUpdate({ _id: req.user._id },
+    { token: "" }
+    , (err, user) => {
+      if (err) return res.json({ success: false, err });
+      return res.status(200).send({
+        success: true, message: 'test'
+      })
+    })
+})
 
-  // res.clearCookie('x_auth');
-  User.findOneAndUpdate(
-      { _id: req.user._id },
-      { $set: { token: "" } },
-      { new: true }, // 옵션을 추가하여 업데이트된 문서를 반환하도록 함
-      (err, updatedUser) => {
-          if (err) return res.json({ success: false, err });
+
+// app.get('/api/users/logout', auth, async (req, res) => {
+
+//   // res.clearCookie('x_auth');
+//   User.findOneAndUpdate(
+//       { _id: req.user._id },
+//       { $set: { token: "" } },
+//       { new: true }, // 옵션을 추가하여 업데이트된 문서를 반환하도록 함
+//       (err, updatedUser) => {
+//           if (err) return res.json({ success: false, err });
           
-          // 로그아웃 후 업데이트된 사용자 정보를 출력
-          console.log('Updated User:', updatedUser);
+//           // 로그아웃 후 업데이트된 사용자 정보를 출력
+//           console.log('Updated User:', updatedUser);
           
-          return res.status(200).send({
-              success: true, message : 'logout Success'
-          });
-      }
-  );
-});
+//           return res.status(200).send({
+//               success: true, message : 'logout Success'
+//           });
+//       }
+//   );
+// });
 
 app.get('/api/hello',  async (req, res) => {
   res.send('안녕하세요 axios 테스트입니다.')

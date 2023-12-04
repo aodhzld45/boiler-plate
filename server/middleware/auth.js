@@ -10,7 +10,6 @@ let auth = (req, res, next) => {
       // 에러가 발생하면 클라이언트에 에러 응답을 보낸다.
       return res.status(500).json({ isAuth: false, error: true, message: "인증 실패" });
     }
-
     if (!user) {
       // 유저가 없으면 클라이언트에 응답을 보낸다.
       return res.status(401).json({ isAuth: false, error: true, message: "인증 실패" });

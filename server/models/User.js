@@ -120,6 +120,7 @@ userSchema.methods.generateToken = function() {
 // }
 
 // 토큰 검증
+
 userSchema.statics.findByToken = function (token) {
     const User = this;
 
@@ -137,8 +138,6 @@ userSchema.statics.findByToken = function (token) {
         });
     });
 }
-
-    
 
 const User = mongoose.model('User', userSchema);
 
