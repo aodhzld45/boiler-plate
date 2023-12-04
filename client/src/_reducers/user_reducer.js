@@ -12,8 +12,10 @@ export default function user_reducer (state = {}, action) {
 
         case REGISTER_USER:
             return { ...state, registerSuccess : action.payload }
+
         case AUTH_USER:
             return {...state, userData : action.payload}
+            
         default:
             return state;
     }

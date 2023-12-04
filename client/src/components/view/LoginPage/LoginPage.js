@@ -37,6 +37,7 @@ const onFinishHandler  = () => {
   dispatch(loginUser(body))
     .then((response) => {
       if (response.payload.loginSuccess) {
+        console.log(body);
         navigate('/')
       }else {
         alert('Login failed');
