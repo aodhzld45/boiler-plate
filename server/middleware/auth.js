@@ -13,7 +13,7 @@ let auth = (req, res, next) => {
 
     if (!user) {
       // 유저가 없으면 클라이언트에 응답을 보낸다.
-      return res.json({ isAuth: false, error: true, message: "인증 실패" });
+      return res.status(401).json({ isAuth: false, error: true, message: "인증 실패" });
     }
 
     // 3. 유저가 있으면 인증 Ok

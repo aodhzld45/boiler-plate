@@ -119,9 +119,7 @@ app.get('/api/users/auth', auth, async (req, res) => {
 
 app.get('/api/users/logout', auth, async (req, res) => {
 
-  res.clearCookie('x_auth');
-
-
+  // res.clearCookie('x_auth');
   User.findOneAndUpdate(
       { _id: req.user._id },
       { $set: { token: "" } },
@@ -133,7 +131,7 @@ app.get('/api/users/logout', auth, async (req, res) => {
           console.log('Updated User:', updatedUser);
           
           return res.status(200).send({
-              success: true,
+              success: true, message : 'logout Success'
           });
       }
   );
